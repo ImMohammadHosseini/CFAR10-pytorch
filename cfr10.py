@@ -35,13 +35,13 @@ class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
         self.conv1 = nn.Conv2d(3, 16, 5)
-        self.pool1 = nn.MaxPool2d(2, 2)
+        self.pool1 = nn.AvgPool2d(2, 2)
         self.conv2 = nn.Conv2d(16, 32, 3)
-        self.conv3 = nn.Conv2d(32, 16, 3)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 32)
-        self.fc4 = nn.Linear(32, 10)
+        self.conv3 = nn.Conv2d(32, 8, 3)
+        self.fc1 = nn.Linear(8 * 5 * 5, 30)
+        self.fc2 = nn.Linear(30, 10)
+        #self.fc3 = nn.Linear(84, 32)
+        #self.fc4 = nn.Linear(32, 10)
         
     def forward(self, x):
         x = self.pool1(nn.functional.relu(self.conv1(x)))
@@ -49,9 +49,9 @@ class NeuralNetwork(nn.Module):
         x = self.pool1(nn.functional.relu(self.conv3(x)))
         x = torch.flatten(x, 1) # flatten all dimensions except batch
         x = nn.functional.relu(self.fc1(x))
-        x = nn.functional.relu(self.fc2(x))
-        x = nn.functional.relu(self.fc3(x))
-        x = self.fc4(x)
+        x = self.fc2(x)
+        #x = nn.functional.relu(self.fc3(x))
+        #x = self.fc4(x)
         return x
 
 model = NeuralNetwork().to(device)
@@ -140,7 +140,7 @@ for epoch in range(10):  # loop over the dataset multiple times
 
         # print statistics
         running_loss += loss.item()
-        if i % 200 == 199:    # print every 2000 mini-batches
+        if i % 1000 == 999:    # print every 2000 mini-batches
             print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
             running_loss = 0.0
 
